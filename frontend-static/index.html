@@ -1,0 +1,222 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7fc">
+  <title>StudyMate AI — Ton assistant d'études</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #202344;
+      background: radial-gradient(ellipse at top, #e8eaff, #f7f8fc 65%);
+      min-height: 100vh;
+    }
+    header {
+      max-width: 1000px;
+      margin: auto;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #e4e6f0;
+    }
+    .brand { font-size: 21px; font-weight: 800; }
+    .mark {
+      display: inline-grid;
+      place-items: center;
+      background: #6758e8;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      margin-right: 8px;
+    }
+    .status {
+      color: #287753;
+      background: #e5f6ec;
+      border-radius: 20px;
+      padding: 9px 12px;
+      font-size: 12px;
+    }
+    .hero {
+      text-align: center;
+      padding: 55px 20px 30px;
+    }
+    .eyebrow {
+      color: #6758e8;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+    h1 {
+      font-size: clamp(36px, 6vw, 56px);
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin: 18px 0;
+    }
+    h1 span { color: #6758e8; }
+    .subtitle {
+      max-width: 560px;
+      margin: auto;
+      color: #737790;
+      line-height: 1.8;
+    }
+    main {
+      max-width: 740px;
+      margin: 0 auto 45px;
+      padding: 30px;
+      background: white;
+      border: 1px solid #e7e8f1;
+      border-radius: 20px;
+      box-shadow: 0 18px 50px #30345c10;
+    }
+    label {
+      display: block;
+      margin: 0 0 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    textarea, select {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 22px;
+      border: 1px solid #e0e2ed;
+      border-radius: 11px;
+      background: #fcfcff;
+      color: #30334f;
+      font: inherit;
+    }
+    textarea { resize: vertical; line-height: 1.7; }
+    textarea:focus, select:focus {
+      outline: 2px solid #c6c0ff;
+      border-color: #6758e8;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 11px;
+      background: linear-gradient(100deg, #7565ef, #5746d8);
+      color: white;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+    }
+    button:disabled { opacity: .65; cursor: wait; }
+    #message { line-height: 1.6; overflow-wrap: anywhere; }
+    .result {
+      margin-top: 22px;
+      padding: 20px;
+      border: 1px solid #e5e1ff;
+      border-radius: 12px;
+      background: #f8f7ff;
+    }
+    .result h2 { margin-top: 0; font-size: 18px; }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #9296aa;
+      font-size: 12px;
+    }
+    @media (max-width: 600px) {
+      header { padding: 18px 12px; }
+      .brand { font-size: 17px; }
+      .status { font-size: 10px; }
+      main { margin: 0 12px 30px; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><span class="mark">S</span>StudyMate AI</div>
+    <div class="status">● Mode démo gratuit</div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">TON ASSISTANT D'ÉTUDES INTELLIGENT</p>
+    <h1>Apprends mieux.<br><span>Réussis davantage.</span></h1>
+    <p class="subtitle">
+      Organise tes révisions, travaille tes cours et progresse
+      à ton rythme avec ton espace d'apprentissage.
+    </p>
+  </section>
+
+  <main>
+    <form id="studyForm">
+      <label for="course">Ton cours</label>
+      <textarea id="course" rows="8"
+        placeholder="Colle ici ton cours ou le texte que tu veux étudier..."
+        required></textarea>
+
+      <label for="mode">Que veux-tu faire ?</label>
+      <select id="mode">
+        <option value="summary">Résumer mon cours</option>
+        <option value="explain">Expliquer un concept</option>
+        <option value="quiz">Préparer un quiz</option>
+      </select>
+
+      <button id="submitButton" type="submit">Commencer</button>
+    </form>
+
+    <p id="message" role="status"></p>
+    <section id="result" class="result" hidden aria-live="polite">
+      <h2>Ton résultat</h2>
+      <p id="answer"></p>
+    </section>
+  </main>
+
+  <footer>StudyMate AI · Apprendre à ton rythme</footer>
+
+  <script>
+    const form = document.getElementById('studyForm');
+    const button = document.getElementById('submitButton');
+    const message = document.getElementById('message');
+    const result = document.getElementById('result');
+    const answer = document.getElementById('answer');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const text = document.getElementById('course').value.trim();
+      const mode = document.getElementById('mode').value;
+
+      if (!text) {
+        message.textContent = 'Veuillez saisir votre cours.';
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Traitement en cours...';
+      message.textContent = '';
+      result.hidden = true;
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/study', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, mode })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.answer || 'Une erreur est survenue.');
+        }
+
+        answer.textContent = data.answer;
+        result.hidden = false;
+      } catch (error) {
+        message.textContent =
+          'Connexion impossible au backend. Vérifie que le serveur Flask est démarré.';
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Commencer';
+      }
+    });
+  </script>
+</body>
+</html>
