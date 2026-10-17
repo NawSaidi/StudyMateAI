@@ -1,8 +1,32 @@
-
+# Python
 .venv/
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
 .streamlit/secrets.toml
+
+# Node.js / Vite
 node_modules/
 dist/
+.vite/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local backups
+backup/
+frontend-static/index-backup.html.html

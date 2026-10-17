@@ -1,272 +1,161 @@
+# StudyMate AI 📚
 
+**A local AI-powered study assistant that helps students understand, summarize, and practice their course material.**
 
-\# StudyMate AI 📚
+StudyMate AI is a learning project built with HTML, CSS, JavaScript, Python, Flask, and Ollama. It uses a locally running language model to provide study support without requiring a paid AI API key.
 
+## Features
 
+- **Course Summarization:** Turn course material into clear, structured summaries.
+- **Concept Explanation:** Get beginner-friendly explanations of difficult topics.
+- **Interactive MCQ Quizzes:** Generate five multiple-choice questions with four answer options each.
+- **Automatic Scoring:** Submit answers, receive a score, and review the correct answers.
+- **Answer Explanations:** Understand why each correct answer is right.
+- **Local AI Inference:** Generate responses using Ollama and Llama 3.2 (3B).
+- **French Learning Support:** Designed for students who study in French.
 
-An AI-powered study assistant designed to help students learn more effectively.
+## Tech Stack
 
+| Component | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | Python, Flask |
+| Cross-origin requests | Flask-CORS |
+| AI runtime | Ollama |
+| Language model | Llama 3.2 (3B) |
+| Version control | Git, GitHub |
 
+## Architecture
 
-\## Overview
+```text
+User's Browser
+      |
+      v
+HTML / CSS / JavaScript
+      |
+      | HTTP requests
+      v
+Python Flask Backend
+127.0.0.1:8000
+      |
+      | Local API requests
+      v
+Ollama
+127.0.0.1:11434
+      |
+      v
+Llama 3.2 (3B)
+```
 
+## Prerequisites
 
+Install the following software:
 
-StudyMate AI is a web application that helps students understand their courses using a locally running AI model. It connects a simple web interface to a Python Flask backend and Ollama.
+- Python 3
+- Git
+- Ollama
 
+Download Ollama from [ollama.com/download](https://ollama.com/download).
 
+## Getting Started
 
-\## Features
-
-
-
-\- \*\*Course Summarization:\*\* Generate clear summaries of study materials.
-
-\- \*\*Concept Explanation:\*\* Explain difficult topics in beginner-friendly language.
-
-\- \*\*MCQ Quiz Generation:\*\* Generate multiple-choice questions with answers and explanations.
-
-\- \*\*Local AI:\*\* Run inference locally with Ollama and Llama 3.2 (3B).
-
-\- \*\*French Responses:\*\* Designed to support students learning in French.
-
-
-
-\## Tech Stack
-
-
-
-\- \*\*Frontend:\*\* HTML, CSS, JavaScript
-
-\- \*\*Backend:\*\* Python, Flask, Flask-CORS
-
-\- \*\*AI Runtime:\*\* Ollama
-
-\- \*\*AI Model:\*\* `llama3.2:3b`
-
-\- \*\*Version Control:\*\* Git and GitHub
-
-
-
-\## Prerequisites
-
-
-
-Install the following tools:
-
-
-
-\- Python 3
-
-\- Ollama
-
-\- Git (optional, for cloning the repository)
-
-
-
-Download Ollama: https://ollama.com/download
-
-
-
-\## Installation
-
-
-
-\### 1. Clone the repository
-
-
+### 1. Clone the repository
 
 ```bash
-
 git clone https://github.com/NawSaidi/StudyMateAI.git
-
 cd StudyMateAI
-
 ```
 
-
-
-\### 2. Download the AI model
-
-
+### 2. Download the AI model
 
 ```bash
-
 ollama pull llama3.2:3b
-
 ```
 
+Make sure Ollama is running before using the application.
 
-
-Make sure Ollama is running on your computer.
-
-
-
-\### 3. Create a Python virtual environment
-
-
+### 3. Create and activate a virtual environment
 
 On Windows CMD:
 
-
-
 ```cmd
-
 python -m venv .venv
-
-.venv\\Scripts\\activate.bat
-
+.venv\Scripts\activate.bat
 ```
 
-
-
-\### 4. Install backend dependencies
-
-
+### 4. Install the Python dependencies
 
 ```cmd
-
 python -m pip install flask flask-cors requests
-
 ```
 
+### 5. Start the backend
 
-
-\### 5. Start the backend
-
-
+From the project root:
 
 ```cmd
-
 python backend.py
-
 ```
 
+The Flask backend should be available at:
 
+`http://127.0.0.1:8000`
 
-The backend runs at:
+Keep this terminal open.
 
+### 6. Start the frontend
 
-
-http://127.0.0.1:8000
-
-
-
-\### 6. Start the frontend
-
-
-
-Open a second CMD window in the project directory and run:
-
-
+Open a second CMD window and run:
 
 ```cmd
-
-python -m http.server 5501 --directory frontend-static
-
+cd /d "%USERPROFILE%\Desktop\StudyMateAI"
+.venv\Scripts\python.exe -m http.server 5500 --bind 127.0.0.1 --directory frontend-static
 ```
 
-
+If you cloned the repository to a different folder, change the path accordingly.
 
 Open the application in your browser:
 
+`http://127.0.0.1:5500`
 
+Keep this terminal open as well.
 
-http://127.0.0.1:5501
+## How to Use
 
+1. Open StudyMate AI in your browser.
+2. Paste your course material into the input area.
+3. Select a study feature.
+4. Submit your course and wait for the local AI model.
+5. For quizzes, answer the five questions and submit your choices to see your score and explanations.
 
+## Privacy and Local Execution
 
-\## Architecture
+- AI inference is performed through a locally running Ollama instance.
+- No OpenAI API key is required for this configuration.
+- The application requires the backend, frontend server, and Ollama to be running locally.
+- Avoid entering sensitive personal information into any AI system.
 
+## Current Limitations
 
+- Response speed depends on the computer's hardware and the local model.
+- AI-generated summaries, explanations, and quizzes may contain inaccuracies and should be checked against the original course material.
+- Quiz results are displayed in the current session and are not saved to a database.
+- The project is designed for local use; public deployment requires additional security, configuration, and testing.
 
-```text
+## Roadmap
 
-Browser (HTML/CSS/JavaScript)
+- Add automated backend tests.
+- Improve accessibility and responsive behavior.
+- Add persistent quiz history and progress tracking.
+- Improve validation and error handling.
+- Document a secure deployment workflow.
 
-&#x20;           |
+## Author
 
-&#x20;           v
+**Nawres Saidi**
 
-&#x20;      Flask Backend
+GitHub: [@NawSaidi](https://github.com/NawSaidi)
 
-&#x20;      Port 8000
+---
 
-&#x20;           |
-
-&#x20;           v
-
-&#x20;       Ollama API
-
-&#x20;      Port 11434
-
-&#x20;           |
-
-&#x20;           v
-
-&#x20;     Llama 3.2 (3B)
-
-```
-
-
-
-\## Important Notes
-
-
-
-\- The AI model runs locally on the computer hosting the application.
-
-\- Ollama must be running for AI features to work.
-
-\- No OpenAI API key is required for this local setup.
-
-\- The first response may take some time, depending on the computer.
-
-\- The frontend and backend must both be running during local use.
-
-
-
-\## Current Limitations
-
-
-
-This is an early-stage project. Quiz generation currently returns questions and an answer key; interactive quiz scoring may be added in a future version.
-
-
-
-\## Future Improvements
-
-
-
-\- Improve the user interface and accessibility.
-
-\- Add interactive quizzes and score tracking.
-
-\- Add loading indicators and clearer error messages.
-
-\- Prepare a secure, public online deployment.
-
-\- Add automated tests.
-
-
-
-\## Author
-
-
-
-\*\*Nawres Saidi\*\*
-
-
-
-GitHub: https://github.com/NawSaidi
-
-
-
-\---
-
-
-
-Built as a learning project to explore frontend development, Python backend development, and local AI integration.
-
-
-
+*Built as a learning project to explore frontend development, Python backend development, and local AI integration.*
