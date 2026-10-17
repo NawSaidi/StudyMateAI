@@ -4,496 +4,1080 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6f7fc">
-  <title>StudyMate AI — Ton assistant d'études</title>
+  <meta name="theme-color" content="#f7f7fc">
+  <title>StudyMate AI — Espace d’apprentissage</title>
 
   <style>
+    :root {
+      --primary: #6558d9;
+      --primary-dark: #5144c1;
+      --primary-light: #efedff;
+      --ink: #252544;
+      --muted: #85869f;
+      --line: #eaeaf3;
+      --bg: #f7f7fc;
+      --white: #fff;
+      --green: #23845a;
+      --radius: 17px;
+    }
+
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
+      background: var(--bg);
+      color: var(--ink);
       font-family: "Segoe UI", Arial, sans-serif;
-      color: #202344;
-      background: radial-gradient(ellipse at top, #e8eaff, #f7f8fc 65%);
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    [hidden] { display: none !important; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr);
       min-height: 100vh;
     }
 
-    header {
-      max-width: 1000px;
-      margin: auto;
-      padding: 24px;
+    /* Navigation latérale */
+
+    .sidebar {
+      position: sticky;
+      top: 0;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      height: 100vh;
+      padding: 25px 17px 18px;
+      background: var(--white);
+      border-right: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 9px;
+      color: var(--ink);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.7px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #887df4, #5548c9);
+      color: white;
+      font-size: 19px;
+      box-shadow: 0 5px 13px #6558d926;
+    }
+
+    .nav-label {
+      margin: 37px 10px 12px;
+      color: #a0a0b5;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .nav-button {
+      display: flex;
       align-items: center;
       gap: 12px;
-      border-bottom: 1px solid #e4e6f0;
-    }
-
-    .brand { font-size: 21px; font-weight: 800; }
-
-    .mark {
-      display: inline-grid;
-      place-items: center;
-      background: #6758e8;
-      color: white;
-      width: 36px;
-      height: 36px;
+      width: 100%;
+      margin: 3px 0;
+      padding: 12px 13px;
+      border: 1px solid transparent;
       border-radius: 11px;
-      margin-right: 8px;
+      background: transparent;
+      color: #777891;
+      text-align: left;
+      transition: .18s ease;
     }
 
-    .status {
-      color: #287753;
-      background: #e5f6ec;
-      border-radius: 20px;
-      padding: 9px 12px;
-      font-size: 12px;
+    .nav-button:hover {
+      background: #f7f6ff;
+      color: var(--primary);
     }
 
-    .hero {
-      text-align: center;
-      padding: 55px 20px 30px;
-    }
-
-    .eyebrow {
-      color: #6758e8;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 2px;
-    }
-
-    h1 {
-      font-size: clamp(36px, 6vw, 56px);
-      line-height: 1.1;
-      letter-spacing: -2px;
-      margin: 18px 0;
-    }
-
-    h1 span { color: #6758e8; }
-
-    .subtitle {
-      max-width: 560px;
-      margin: auto;
-      color: #737790;
-      line-height: 1.8;
-    }
-
-    main {
-      max-width: 740px;
-      margin: 0 auto 45px;
-      padding: 30px;
-      background: white;
-      border: 1px solid #e7e8f1;
-      border-radius: 20px;
-      box-shadow: 0 18px 50px #30345c10;
-    }
-
-    label {
-      display: block;
-      margin: 0 0 10px;
-      font-size: 14px;
+    .nav-button.active {
+      background: var(--primary-light);
+      color: var(--primary-dark);
       font-weight: 700;
     }
 
-    textarea, select {
-      width: 100%;
-      padding: 14px;
-      margin-bottom: 22px;
-      border: 1px solid #e0e2ed;
-      border-radius: 11px;
-      background: #fcfcff;
-      color: #30334f;
-      font: inherit;
+    .nav-icon {
+      display: grid;
+      place-items: center;
+      width: 23px;
+      font-size: 18px;
     }
 
-    textarea {
-      resize: vertical;
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 17px 13px;
+      border: 1px solid #e8e5ff;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #f8f7ff, #f0efff);
+    }
+
+    .sidebar-bottom strong {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 13px;
+    }
+
+    .sidebar-bottom p {
+      margin: 0;
+      color: #777795;
+      font-size: 12px;
       line-height: 1.7;
     }
 
-    textarea:focus, select:focus {
-      outline: 2px solid #c6c0ff;
-      border-color: #6758e8;
+    .local-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: #2baf76;
     }
 
-    button {
-      width: 100%;
-      padding: 15px;
-      border: 0;
-      border-radius: 11px;
-      background: linear-gradient(100deg, #7565ef, #5746d8);
-      color: white;
-      font: inherit;
+    /* Zone principale */
+
+    .main-area {
+      min-width: 0;
+      padding: 0 38px 35px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      min-height: 78px;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .local-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      border: 1px solid #d8efe2;
+      border-radius: 30px;
+      background: #f0faf4;
+      color: #28764e;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 37px;
+      height: 37px;
+      border-radius: 12px;
+      background: #ebe8ff;
+      color: var(--primary-dark);
+      font-weight: 800;
+    }
+
+    .welcome {
+      padding: 37px 0 27px;
+    }
+
+    .welcome-label {
+      margin: 0 0 10px;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(27px, 3vw, 36px);
+      line-height: 1.25;
+      letter-spacing: -1.2px;
+    }
+
+    .welcome-description {
+      margin: 11px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* Cartes d'outils */
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 15px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -.3px;
+    }
+
+    .section-hint {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+      margin-bottom: 29px;
+    }
+
+    .tool-card {
+      position: relative;
+      min-width: 0;
+      padding: 20px 17px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: white;
+      text-align: left;
+      box-shadow: 0 3px 12px #28254f05;
+      transition: transform .2s, border-color .2s, box-shadow .2s;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-3px);
+      border-color: #d4cffb;
+      box-shadow: 0 10px 25px #302c6810;
+    }
+
+    .tool-card.active {
+      border-color: var(--primary);
+      background: linear-gradient(145deg, #f7f6ff, #fff 75%);
+      box-shadow: 0 0 0 2px #6558d915;
+    }
+
+    .tool-icon {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      margin-bottom: 15px;
+      border-radius: 13px;
+      font-size: 21px;
+    }
+
+    .icon-purple { background: #efedff; }
+    .icon-blue { background: #e8f2ff; }
+    .icon-orange { background: #fff0e4; }
+
+    .tool-card h3 {
+      margin: 0 0 7px;
+      font-size: 14px;
       font-weight: 750;
-      cursor: pointer;
-      transition: opacity .2s, transform .2s;
     }
 
-    button:hover:not(:disabled) {
+    .tool-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .tool-arrow {
+      position: absolute;
+      top: 21px;
+      right: 15px;
+      color: #a3a1c3;
+      font-size: 17px;
+    }
+
+    /* Espace de travail */
+
+    .workspace {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 19px;
+      background: white;
+      box-shadow: 0 6px 24px #302c6807;
+    }
+
+    .workspace-header {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 20px 23px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .workspace-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: var(--primary-light);
+      font-size: 19px;
+    }
+
+    .workspace-header h2 {
+      margin: 0 0 4px;
+      font-size: 15px;
+    }
+
+    .workspace-header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .workspace-body { padding: 24px; }
+
+    .demo-note {
+      margin: 0 0 23px;
+      padding: 13px 15px;
+      border: 1px solid #e7e3ff;
+      border-radius: 12px;
+      background: #f8f7ff;
+      color: #615c89;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    label.field-label {
+      display: block;
+      margin: 0 0 9px;
+      color: #393957;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    textarea, select {
+      display: block;
+      width: 100%;
+      margin: 0 0 20px;
+      padding: 14px 15px;
+      border: 1px solid #e4e4ef;
+      border-radius: 12px;
+      background: #fcfcff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    textarea {
+      min-height: 175px;
+      resize: vertical;
+      line-height: 1.8;
+    }
+
+    textarea::placeholder { color: #a2a2b6; }
+
+    textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px #6558d91a;
+    }
+
+    .input-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: -12px 0 19px;
+      color: #9b9bb0;
+      font-size: 11px;
+    }
+
+    .primary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      width: 100%;
+      min-height: 49px;
+      padding: 13px 19px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(110deg, #7569eb, #5446c8);
+      color: white;
+      font-size: 13px;
+      font-weight: 750;
+      box-shadow: 0 6px 15px #6558d928;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+    }
+
+    .primary-button:hover:not(:disabled) {
       transform: translateY(-1px);
+      box-shadow: 0 9px 20px #6558d93b;
+    }
+
+    button:focus-visible {
+      outline: 3px solid #aaa4ff;
+      outline-offset: 3px;
     }
 
     button:disabled {
       opacity: .65;
       cursor: wait;
+      box-shadow: none;
     }
 
     #message {
-      line-height: 1.6;
+      margin: 17px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
       overflow-wrap: anywhere;
     }
+
+    /* Résultats et quiz */
 
     .result {
       margin-top: 22px;
-      padding: 20px;
-      border: 1px solid #e5e1ff;
-      border-radius: 12px;
+      padding: 23px;
+      border: 1px solid #e6e3ff;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #faf9ff, #fff);
+    }
+
+    .result-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 17px;
+    }
+
+    .result-heading h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .result-heading span { font-size: 20px; }
+
+    .answer-text {
+      margin: 0;
+      color: #454561;
+      line-height: 1.9;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .quiz-question {
+      margin: 16px 0;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: white;
+    }
+
+    .quiz-question h3 {
+      margin: 0 0 15px;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 8px 0;
+      padding: 12px;
+      border: 1px solid #e7e7f1;
+      border-radius: 10px;
+      background: #fdfdff;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.7;
+    }
+
+    .quiz-option:hover {
+      border-color: #c9c3ff;
       background: #f8f7ff;
     }
 
-    .result h2 {
-      margin-top: 0;
-      font-size: 18px;
+    .quiz-option input {
+      flex-shrink: 0;
+      margin-top: 4px;
+      accent-color: var(--primary);
     }
 
-    .demo-note {
-      margin: 0 0 22px;
-      padding: 12px 14px;
-      border: 1px solid #e8e2b6;
+    .quiz-option:has(input:checked) {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .quiz-option:has(input:disabled) { cursor: default; }
+
+    .quiz-feedback {
+      margin-top: 12px;
+      padding: 12px;
       border-radius: 10px;
-      background: #fffbea;
-      color: #66551c;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .answer-text {
-      white-space: pre-wrap;
+      background: #f1f1f9;
+      color: #4e4e6b;
+      font-size: 12px;
+      line-height: 1.8;
       overflow-wrap: anywhere;
-      line-height: 1.7;
-      margin-bottom: 0;
     }
 
-.quiz-question {
-  margin: 18px 0;
-  padding: 18px;
-  border: 1px solid #e5e1ff;
-  border-radius: 12px;
-  background: white;
-}
-
-.quiz-question h3 {
-  font-size: 15px;
-  line-height: 1.6;
-  margin: 0 0 14px;
-}
-
-.quiz-option {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px;
-  margin: 8px 0;
-  border: 1px solid #e0e2ed;
-  border-radius: 9px;
-  cursor: pointer;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.quiz-option input {
-  margin-top: 4px;
-  accent-color: #6758e8;
-}
-
-.quiz-feedback {
-  margin-top: 12px;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.quiz-score {
-  padding: 16px;
-  margin-top: 18px;
-  border-radius: 10px;
-  background: #e5f6ec;
-  color: #205e42;
-  font-weight: 700;
-  line-height: 1.7;
-}
-
+    .quiz-score {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid #d4eedf;
+      border-radius: 12px;
+      background: #e8f8ef;
+      color: #216644;
+      font-size: 14px;
+      font-weight: 750;
+      line-height: 1.8;
+      text-align: center;
+    }
 
     footer {
+      padding: 28px 10px 5px;
+      color: #a0a0b2;
+      font-size: 11px;
       text-align: center;
-      padding: 20px;
-      color: #9296aa;
-      font-size: 12px;
     }
 
-    @media (max-width: 600px) {
-      header { padding: 18px 12px; }
+    @media (max-width: 1050px) {
+      .main-area { padding-right: 24px; padding-left: 24px; }
+      .tool-grid { gap: 10px; }
+      .tool-card { padding: 17px 13px; }
+    }
+
+    @media (max-width: 760px) {
+      .app { grid-template-columns: 1fr; }
+
+      .sidebar {
+        position: static;
+        height: auto;
+        padding: 13px 16px;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
       .brand { font-size: 17px; }
-      .status { font-size: 10px; }
-      main { margin: 0 12px 30px; padding: 20px; }
-      .hero { padding-top: 40px; }
+
+      .sidebar .nav-label,
+      .sidebar-bottom { display: none; }
+
+      .sidebar nav {
+        display: flex;
+        gap: 7px;
+        margin-top: 13px;
+        overflow-x: auto;
+      }
+
+      .nav-button {
+        justify-content: center;
+        gap: 7px;
+        width: auto;
+        flex-shrink: 0;
+        margin: 0;
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+
+      .nav-icon { font-size: 15px; }
+
+      .main-area { padding: 0 16px 25px; }
+
+      .topbar { min-height: 60px; }
+
+      .welcome { padding: 28px 0 24px; }
+
+      h1 { font-size: 29px; }
+
+      .tool-grid { grid-template-columns: 1fr; gap: 10px; }
+
+      .tool-card {
+        display: grid;
+        grid-template-columns: 43px minmax(0, 1fr) 18px;
+        align-items: center;
+        column-gap: 12px;
+        padding: 14px;
+      }
+
+      .tool-icon { grid-row: 1 / span 2; margin: 0; }
+
+      .tool-card h3 { align-self: end; margin: 0 0 4px; }
+
+      .tool-card p { align-self: start; }
+
+      .tool-arrow {
+        position: static;
+        grid-column: 3;
+        grid-row: 1 / span 2;
+      }
+
+      .workspace-header { padding: 17px; }
+      .workspace-body { padding: 17px; }
+      .result { padding: 17px; }
+    }
+
+    @media (max-width: 420px) {
+      .main-area { padding-right: 11px; padding-left: 11px; }
+      .sidebar { padding-right: 11px; padding-left: 11px; }
+      .local-status { font-size: 11px; }
+      .welcome-description { font-size: 13px; }
+      .workspace-body { padding: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="brand">
-      <span class="mark">S</span>StudyMate AI
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="StudyMate AI, accueil">
+        <span class="brand-mark">S</span>
+        <span>StudyMate AI</span>
+      </a>
+
+      <p class="nav-label">Espace d'étude</p>
+
+      <nav aria-label="Outils d'apprentissage">
+        <button class="nav-button active" type="button" data-mode="summary">
+          <span class="nav-icon">⌁</span>
+          <span>Résumé de cours</span>
+        </button>
+        <button class="nav-button" type="button" data-mode="explain">
+          <span class="nav-icon">✳</span>
+          <span>Comprendre un concept</span>
+        </button>
+        <button class="nav-button" type="button" data-mode="quiz">
+          <span class="nav-icon">✓</span>
+          <span>Quiz interactif</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <strong><span class="local-dot"></span>IA locale</strong>
+        <p>Travaille tes cours avec ton assistant d'apprentissage sur ton ordinateur.</p>
+      </div>
+    </aside>
+
+    <div class="main-area">
+      <header class="topbar">
+        <div class="local-status">
+          <span class="local-dot"></span>
+          Assistant local
+        </div>
+        <div class="avatar" aria-label="StudyMate AI">S</div>
+      </header>
+
+      <section class="welcome">
+        <p class="welcome-label">Ton espace d'apprentissage</p>
+        <h1>Bonjour ! Prêt à <span style="color:var(--primary)">progresser ?</span></h1>
+        <p class="welcome-description">
+          Transforme tes cours en connaissances. Choisis un outil,
+          ajoute ton texte et avance à ton rythme.
+        </p>
+      </section>
+
+      <section aria-labelledby="toolsTitle">
+        <div class="section-heading">
+          <h2 id="toolsTitle">Que souhaites-tu faire ?</h2>
+          <span class="section-hint">3 outils disponibles</span>
+        </div>
+
+        <div class="tool-grid">
+          <button class="tool-card active" type="button" data-mode="summary" aria-pressed="true">
+            <span class="tool-icon icon-purple">✎</span>
+            <span class="tool-arrow">↗</span>
+            <h3>Résumer un cours</h3>
+            <p>Extrais les idées essentielles et révise plus vite.</p>
+          </button>
+
+          <button class="tool-card" type="button" data-mode="explain" aria-pressed="false">
+            <span class="tool-icon icon-blue">✳</span>
+            <span class="tool-arrow">↗</span>
+            <h3>Comprendre un concept</h3>
+            <p>Obtiens une explication plus simple et claire.</p>
+          </button>
+
+          <button class="tool-card" type="button" data-mode="quiz" aria-pressed="false">
+            <span class="tool-icon icon-orange">✓</span>
+            <span class="tool-arrow">↗</span>
+            <h3>Tester mes connaissances</h3>
+            <p>Entraîne-toi avec un quiz et découvre ton score.</p>
+          </button>
+        </div>
+      </section>
+
+      <section class="workspace" aria-labelledby="workspaceTitle">
+        <div class="workspace-header">
+          <div class="workspace-icon" id="workspaceIcon">✎</div>
+          <div>
+            <h2 id="workspaceTitle">Résumer mon cours</h2>
+            <p id="workspaceDescription">Un résumé clair pour mieux retenir l'essentiel.</p>
+          </div>
+        </div>
+
+        <div class="workspace-body">
+          <p class="demo-note">
+            <strong>Ton espace d'étude :</strong>
+            les requêtes sont envoyées à ton backend local.
+            Aucune clé d'API payante n'est nécessaire.
+          </p>
+
+          <form id="studyForm">
+            <label class="field-label" for="course">Contenu du cours</label>
+            <textarea
+              id="course"
+              rows="7"
+              maxlength="12000"
+              placeholder="Colle ici ton cours ou le texte que tu veux étudier..."
+              required
+            ></textarea>
+
+            <div class="input-footer">
+              <span>Conseil : ajoute un cours avec suffisamment de détails.</span>
+              <span id="charCount">0 / 12000</span>
+            </div>
+
+            <select id="mode" aria-label="Outil d'apprentissage" hidden>
+              <option value="summary">Résumer mon cours</option>
+              <option value="explain">Expliquer un concept</option>
+              <option value="quiz">Préparer un quiz</option>
+            </select>
+
+            <button id="submitButton" class="primary-button" type="submit">
+              <span id="buttonIcon">✦</span>
+              <span id="buttonText">Générer mon résumé</span>
+            </button>
+          </form>
+
+          <p id="message" role="status" aria-live="polite"></p>
+
+          <section id="result" class="result" hidden>
+            <div class="result-heading">
+              <span>✧</span>
+              <h2>Ton résultat</h2>
+            </div>
+            <p id="answer" class="answer-text"></p>
+            <div id="quizContainer" hidden></div>
+          </section>
+        </div>
+      </section>
+
+      <footer>StudyMate AI · Apprendre à ton rythme</footer>
     </div>
-    <div class="status">● Mode démo gratuit</div>
-  </header>
+  </div>
 
-  <section class="hero">
-    <p class="eyebrow">TON ASSISTANT D'ÉTUDES INTELLIGENT</p>
-    <h1>Apprends mieux.<br><span>Réussis davantage.</span></h1>
-    <p class="subtitle">
-      Organise tes révisions, travaille tes cours et progresse
-      à ton rythme avec ton espace d'apprentissage.
-    </p>
-  </section>
+  <script>
+    const form = document.getElementById("studyForm");
+    const button = document.getElementById("submitButton");
+    const buttonText = document.getElementById("buttonText");
+    const buttonIcon = document.getElementById("buttonIcon");
+    const message = document.getElementById("message");
+    const result = document.getElementById("result");
+    const answer = document.getElementById("answer");
+    const quizContainer = document.getElementById("quizContainer");
+    const course = document.getElementById("course");
+    const modeSelect = document.getElementById("mode");
+    const charCount = document.getElementById("charCount");
 
-  <main>
-    <p class="demo-note">
-      <strong>Mode démo gratuit :</strong>
-      cette version communique avec le backend Flask installé sur
-      ton ordinateur. Elle n'utilise aucune API payante.
-      Les réponses reposent sur des règles simples et ne sont pas
-      générées par un véritable modèle d'IA.
-    </p>
+    const workspaceIcon = document.getElementById("workspaceIcon");
+    const workspaceTitle = document.getElementById("workspaceTitle");
+    const workspaceDescription = document.getElementById("workspaceDescription");
 
-    <form id="studyForm">
-      <label for="course">Ton cours</label>
-      <textarea
-        id="course"
-        rows="8"
-        maxlength="12000"
-        placeholder="Colle ici ton cours ou le texte que tu veux étudier..."
-        required
-      ></textarea>
+    const API_URL = "http://127.0.0.1:8000";
 
-      <label for="mode">Que veux-tu faire ?</label>
-      <select id="mode">
-        <option value="summary">Résumer mon cours</option>
-        <option value="explain">Expliquer un concept</option>
-        <option value="quiz">Préparer un quiz</option>
-      </select>
+    const endpoints = {
+      summary: "/api/summarize",
+      explain: "/api/chat",
+      quiz: "/api/quiz"
+    };
 
-      <button id="submitButton" type="submit">
-        Commencer
-      </button>
-    </form>
+    const modeDetails = {
+      summary: {
+        title: "Résumer mon cours",
+        description: "Un résumé clair pour mieux retenir l'essentiel.",
+        button: "Générer mon résumé",
+        icon: "✎",
+        placeholder: "Colle ici le cours que tu veux résumer..."
+      },
+      explain: {
+        title: "Comprendre un concept",
+        description: "Approfondis un sujet avec une explication simple.",
+        button: "Expliquer mon cours",
+        icon: "✳",
+        placeholder: "Colle ton cours ou le passage que tu veux comprendre..."
+      },
+      quiz: {
+        title: "Tester mes connaissances",
+        description: "Prépare-toi avec un quiz interactif de 5 questions.",
+        button: "Générer mon quiz",
+        icon: "✓",
+        placeholder: "Colle le cours sur lequel tu veux être interrogé..."
+      }
+    };
 
-    <p id="message" role="status" aria-live="polite"></p>
+    function setMode(mode) {
+      if (!modeDetails[mode]) return;
 
-    <section id="result" class="result" hidden>
-  <h2>Ton résultat</h2>
-  <p id="answer" class="answer-text"></p>
-  <div id="quizContainer" hidden></div>
-</section>
-  </main>
+      modeSelect.value = mode;
+      const details = modeDetails[mode];
 
-  <footer>StudyMate AI · Apprendre à ton rythme</footer>
+      workspaceTitle.textContent = details.title;
+      workspaceDescription.textContent = details.description;
+      workspaceIcon.textContent = details.icon;
+      buttonIcon.textContent = mode === "quiz" ? "✓" : "✦";
+      buttonText.textContent = details.button;
+      course.placeholder = details.placeholder;
 
-  
-<script>
-  const form = document.getElementById("studyForm");
-  const button = document.getElementById("submitButton");
-  const message = document.getElementById("message");
-  const result = document.getElementById("result");
-  const answer = document.getElementById("answer");
-  const quizContainer = document.getElementById("quizContainer");
+      document.querySelectorAll("[data-mode]").forEach((element) => {
+        const active = element.dataset.mode === mode;
 
-  const API_URL = "http://127.0.0.1:8000";
+        if (element.classList.contains("nav-button")) {
+          element.classList.toggle("active", active);
+        }
 
-  const endpoints = {
-    summary: "/api/summarize",
-    explain: "/api/chat",
-    quiz: "/api/quiz"
-  };
-
-  function renderQuiz(questions) {
-    quizContainer.replaceChildren();
-    quizContainer.hidden = false;
-    answer.hidden = true;
-
-    const quizForm = document.createElement("form");
-    quizForm.id = "interactiveQuiz";
-
-    questions.forEach((question, index) => {
-      const card = document.createElement("div");
-      card.className = "quiz-question";
-
-      const title = document.createElement("h3");
-      title.textContent = `Question ${index + 1} sur ${questions.length} : ${question.question}`;
-      card.appendChild(title);
-
-      question.options.forEach((option, optionIndex) => {
-        const label = document.createElement("label");
-        label.className = "quiz-option";
-
-        const input = document.createElement("input");
-        input.type = "radio";
-        input.name = `question-${index}`;
-        input.value = String(optionIndex);
-        input.required = true;
-
-        const text = document.createElement("span");
-        text.textContent = option;
-
-        label.append(input, text);
-        card.appendChild(label);
+        if (element.classList.contains("tool-card")) {
+          element.classList.toggle("active", active);
+          element.setAttribute("aria-pressed", String(active));
+        }
       });
 
-      const feedback = document.createElement("div");
-      feedback.className = "quiz-feedback";
-      feedback.hidden = true;
-      feedback.id = `feedback-${index}`;
-      card.appendChild(feedback);
+      message.textContent = "";
+    }
 
-      quizForm.appendChild(card);
-    });
-
-    const gradeButton = document.createElement("button");
-    gradeButton.type = "submit";
-    gradeButton.textContent = "Corriger mes réponses";
-    quizForm.appendChild(gradeButton);
-
-    const scoreBox = document.createElement("div");
-    scoreBox.className = "quiz-score";
-    scoreBox.hidden = true;
-    scoreBox.setAttribute("role", "status");
-    quizForm.appendChild(scoreBox);
-
-    quizForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      let score = 0;
-
-      questions.forEach((question, index) => {
-        const selected = quizForm.querySelector(
-          `input[name="question-${index}"]:checked`
-        );
-
-        const selectedIndex = selected
-          ? Number(selected.value)
-          : -1;
-
-        const correct = selectedIndex === question.correct_index;
-
-        if (correct) score++;
-
-        const feedback = document.getElementById(`feedback-${index}`);
-        feedback.hidden = false;
-
-        const heading = document.createElement("strong");
-        heading.textContent = correct
-          ? "Bonne réponse ! "
-          : "Pas tout à fait. ";
-
-        const explanation = document.createElement("span");
-        explanation.textContent =
-          `Réponse attendue : ${question.options[question.correct_index]}. ` +
-          question.explanation;
-
-        feedback.replaceChildren(heading, explanation);
-
-        quizForm.querySelectorAll(
-          `input[name="question-${index}"]`
-        ).forEach((input) => {
-          input.disabled = true;
+    document.querySelectorAll("[data-mode]").forEach((element) => {
+      element.addEventListener("click", () => {
+        setMode(element.dataset.mode);
+        document.querySelector(".workspace").scrollIntoView({
+          behavior: "smooth",
+          block: "start"
         });
       });
-
-      scoreBox.textContent =
-        `Ton score : ${score}/${questions.length} — ` +
-        `${Math.round(score / questions.length * 100)} %`;
-
-      scoreBox.hidden = false;
-      gradeButton.disabled = true;
-      gradeButton.textContent = "Quiz corrigé";
     });
 
-    quizContainer.appendChild(quizForm);
-  }
+    course.addEventListener("input", () => {
+      charCount.textContent = `${course.value.length} / 12000`;
+    });
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
+    function renderQuiz(questions) {
+      quizContainer.replaceChildren();
+      quizContainer.hidden = false;
+      answer.hidden = true;
 
-    const text = document.getElementById("course").value.trim();
-    const mode = document.getElementById("mode").value;
+      const quizForm = document.createElement("form");
+      quizForm.id = "interactiveQuiz";
 
-    if (!text) {
-      message.textContent = "Veuillez saisir votre cours.";
-      return;
-    }
+      questions.forEach((question, index) => {
+        const card = document.createElement("div");
+        card.className = "quiz-question";
 
-    button.disabled = true;
-    button.textContent = "L'IA prépare ton résultat...";
-    message.textContent = "Connexion à ton IA locale...";
-    result.hidden = true;
-    answer.hidden = false;
-    answer.textContent = "";
-    quizContainer.hidden = true;
-    quizContainer.replaceChildren();
+        const title = document.createElement("h3");
+        title.textContent =
+          `Question ${index + 1} sur ${questions.length} : ${question.question}`;
+        card.appendChild(title);
 
-    try {
-      const payload = { text };
+        question.options.forEach((option, optionIndex) => {
+          const label = document.createElement("label");
+          label.className = "quiz-option";
 
-      if (mode === "explain") {
-        payload.question = "Explique ce cours simplement en français.";
-      }
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = `question-${index}`;
+          input.value = String(optionIndex);
+          input.required = true;
 
-      const response = await fetch(API_URL + endpoints[mode], {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
+          const text = document.createElement("span");
+          text.textContent = option;
+
+          label.append(input, text);
+          card.appendChild(label);
+        });
+
+        const feedback = document.createElement("div");
+        feedback.className = "quiz-feedback";
+        feedback.hidden = true;
+        card.appendChild(feedback);
+
+        quizForm.appendChild(card);
       });
 
-      const data = await response.json();
+      const gradeButton = document.createElement("button");
+      gradeButton.type = "submit";
+      gradeButton.className = "primary-button";
+      gradeButton.textContent = "Corriger mes réponses";
+      quizForm.appendChild(gradeButton);
 
-      if (!response.ok) {
-        throw new Error(data.error || "Une erreur est survenue.");
-      }
+      const scoreBox = document.createElement("div");
+      scoreBox.className = "quiz-score";
+      scoreBox.hidden = true;
+      scoreBox.setAttribute("role", "status");
+      quizForm.appendChild(scoreBox);
 
-      if (mode === "quiz") {
-        if (!Array.isArray(data.questions) || data.questions.length !== 5) {
-          throw new Error("Le quiz reçu est incomplet. Réessaie.");
-        }
+      quizForm.addEventListener("submit", (event) => {
+        event.preventDefault();
 
-        renderQuiz(data.questions);
-        message.textContent =
-          "Quiz généré par ton IA locale. Sélectionne une réponse pour chaque question.";
-      } else {
-        if (typeof data.answer !== "string") {
-          throw new Error("La réponse reçue est invalide.");
-        }
+        let score = 0;
 
-        answer.textContent = data.answer;
-        message.textContent =
-          "Réponse générée par ton IA locale.";
-      }
+        questions.forEach((question, index) => {
+          const selected = quizForm.querySelector(
+            `input[name="question-${index}"]:checked`
+          );
 
-      result.hidden = false;
+          const selectedIndex = selected ? Number(selected.value) : -1;
+          const correct = selectedIndex === question.correct_index;
 
-    } catch (error) {
-      console.error("StudyMate AI :", error);
-      message.textContent =
-        error.message ||
-        "Impossible de joindre le backend. Vérifie que Flask et Ollama sont démarrés.";
+          if (correct) score++;
 
-    } finally {
-      button.disabled = false;
-      button.textContent = "Commencer";
+          const feedback = quizForm.querySelectorAll(".quiz-feedback")[index];
+
+          const heading = document.createElement("strong");
+          heading.textContent = correct
+            ? "Bonne réponse ! "
+            : "Pas tout à fait. ";
+
+          const explanation = document.createElement("span");
+          explanation.textContent =
+            `Réponse attendue : ${question.options[question.correct_index]}. ` +
+            question.explanation;
+
+          feedback.replaceChildren(heading, explanation);
+          feedback.hidden = false;
+
+          quizForm.querySelectorAll(
+            `input[name="question-${index}"]`
+          ).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        scoreBox.textContent =
+          `Ton score : ${score}/${questions.length} — ` +
+          `${Math.round(score / questions.length * 100)} %`;
+
+        scoreBox.hidden = false;
+        gradeButton.disabled = true;
+        gradeButton.textContent = "Quiz corrigé";
+      });
+
+      quizContainer.appendChild(quizForm);
     }
-  });
-</script>
 
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const text = course.value.trim();
+      const mode = modeSelect.value;
+
+      if (!text) {
+        message.textContent = "Ajoute d'abord le contenu de ton cours.";
+        course.focus();
+        return;
+      }
+
+      button.disabled = true;
+      buttonText.textContent = "Préparation en cours...";
+      buttonIcon.textContent = "…";
+      message.textContent = "Connexion à ton backend local...";
+      result.hidden = true;
+      answer.hidden = false;
+      answer.textContent = "";
+      quizContainer.hidden = true;
+      quizContainer.replaceChildren();
+
+      try {
+        const payload = { text };
+
+        if (mode === "explain") {
+          payload.question = "Explique ce cours simplement en français.";
+        }
+
+        const response = await fetch(API_URL + endpoints[mode], {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        let data;
+
+        try {
+          data = await response.json();
+        } catch {
+          throw new Error(
+            "Le backend a renvoyé une réponse invalide. Vérifie qu'il fonctionne."
+          );
+        }
+
+        if (!response.ok) {
+          throw new Error(data.error || "Une erreur est survenue.");
+        }
+
+        if (mode === "quiz") {
+          if (!Array.isArray(data.questions) || data.questions.length !== 5) {
+            throw new Error("Le quiz reçu est incomplet. Réessaie.");
+          }
+
+          for (const question of data.questions) {
+            if (
+              typeof question.question !== "string" ||
+              !Array.isArray(question.options) ||
+              question.options.length !== 4 ||
+              !Number.isInteger(question.correct_index) ||
+              question.correct_index < 0 ||
+              question.correct_index > 3 ||
+              typeof question.explanation !== "string"
+            ) {
+              throw new Error("Le format du quiz reçu est invalide. Réessaie.");
+            }
+          }
+
+          renderQuiz(data.questions);
+          message.textContent =
+            "Ton quiz est prêt. Réponds aux 5 questions puis corrige tes réponses.";
+        } else {
+          if (typeof data.answer !== "string") {
+            throw new Error("La réponse reçue est invalide.");
+          }
+
+          answer.textContent = data.answer;
+          message.textContent = "Ton résultat est prêt.";
+        }
+
+        result.hidden = false;
+        result.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      } catch (error) {
+        console.error("StudyMate AI :", error);
+        message.textContent =
+          error.message ||
+          "Impossible de joindre le backend. Vérifie que Flask et Ollama sont démarrés.";
+      } finally {
+        button.disabled = false;
+        buttonIcon.textContent = mode === "quiz" ? "✓" : "✦";
+        buttonText.textContent = modeDetails[mode].button;
+      }
+    });
+  </script>
 </body>
 </html>
