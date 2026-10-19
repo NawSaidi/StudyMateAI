@@ -119,19 +119,12 @@ def ask_gemini(prompt):
             "Gemini met trop de temps à répondre. Réessaie."
         ) from exc
 
+    
     except requests.exceptions.HTTPError as exc:
-    response = exc.response
-    status = response.status_code if response is not None else 0
+        response = exc.response
+        status = response.status_code if response is not None else 0
 
-    if response is not None:
-        try:
-            details = response.json()
-            app.logger.warning(
-                "Réponse d'erreur Gemini HTTP %s : %s",
-                status,
-                details
-            )
-        except ValueError:
+        if response is not None:
             app.logger.warning(
                 "Réponse d'erreur Gemini HTTP %s : %s",
                 status,
@@ -155,6 +148,7 @@ def ask_gemini(prompt):
             )
 
         raise RuntimeError(message) from exc
+
 
     except requests.exceptions.RequestException as exc:
         raise RuntimeError(
