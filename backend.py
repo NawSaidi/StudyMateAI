@@ -120,7 +120,23 @@ def ask_gemini(prompt):
         ) from exc
 
     except requests.exceptions.HTTPError as exc:
-        status = exc.response.status_code if exc.response is not None else 0
+    response = exc.response
+    status = response.status_code if response is not None else 0
+
+    if response is not None:
+        try:
+            details = response.json()
+            app.logger.warning(
+                "Réponse d'erreur Gemini HTTP %s : %s",
+                status,
+                details
+            )
+        except ValueError:
+            app.logger.warning(
+                "Réponse d'erreur Gemini HTTP %s : %s",
+                status,
+                response.text[:1000]
+            )
 
         if status in (401, 403):
             message = (
